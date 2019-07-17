@@ -44,6 +44,8 @@
 <script>
 // @ is an alias to /src
 import MedicationModal from "@/components/MedicationModal.vue";
+import Medications from '@/services/Medications'
+
 export default {
   name: "Medications",
   data: () => {
@@ -57,19 +59,29 @@ export default {
   },
   methods: {
     getAllMedications() {
-      this.$http
-        .get(
-          "http://localhost:5000/api/medicationrequest"
-        )
-        .then(
-          response => {
-            console.log(response)
-            this.medications = response.body.medicationrequests;
-            if (this.medications.length > 0) {
-              this.hasMedications = true;
-            }
-          }
-        );
+
+      Medications.fetchList()
+      .then(result => {
+
+        console.log(result)
+
+      })
+
+      // TODO: on error prompt for authz (single resource)
+
+      // this.$http
+      //   .get(
+      //     "http://localhost:5000/api/medicationrequest"
+      //   )
+      //   .then(
+      //     response => {
+      //       console.log(response)
+      //       this.medications = response.body.medicationrequests;
+      //       if (this.medications.length > 0) {
+      //         this.hasMedications = true;
+      //       }
+      //     }
+      //   );
     },
     openModal(medicationRow) {
       console.log(medicationRow)

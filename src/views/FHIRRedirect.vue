@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import FHIRResources from '@/services/FHIRResources'
+import FHIRUserAuthz from '@/services/FHIRUserAuthz'
 
 // @ is an alias to /src
 export default {
@@ -22,26 +22,11 @@ export default {
     	const ticket = this.$route.query.ticket
 	  	const state = this.$route.query.state
 
-	  	FHIRResources.handleAuthorizeCallback(ticket, state)
+	  	FHIRUserAuthz.handleAuthorizeCallback(ticket, state)
 	  	.then(result => {
 	  		this.$router.push('/')	  		
 	  	}, 
 	  	(error) => this.$router.push('/login'));
-
-
-      // this.$http
-      //   .get("http://localhost:5005/api/immunization")
-      //   .then(
-      //     response => {
-      //       console.log("RESPONSE:", response)
-      //       this.immunizations = response.body.immunizations;
-      //       this.sortImmunizations();
-      //       this.patient = "Alice"
-      //     },
-      //     response => {
-      //       console.error(response);
-      //     }
-      //   );
     }
   },
   beforeMount() {

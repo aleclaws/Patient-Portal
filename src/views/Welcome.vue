@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import FHIRResources from '@/services/FHIRResources'
+import FHIRUserAuthz from '@/services/FHIRUserAuthz'
 
 
 // @ is an alias to /src
@@ -48,7 +48,7 @@ export default {
   },
   methods: {
     redirect(path) {
-        const url = FHIRResources.getAuthorizeURL()
+        const url = FHIRUserAuthz.getAuthorizeURL()
         window.location.href=url
 
     }
