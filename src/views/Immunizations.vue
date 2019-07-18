@@ -43,6 +43,8 @@
 
 <script>
 import FHIRResource from '@/services/FHIRResource'
+import FHIRPatient from '@/services/Patient'
+
 
 // @ is an alias to /src
 export default {
@@ -57,14 +59,7 @@ export default {
   },
   computed: {
     patientName: function() {
-
-      const names = this.patient.name
-      if(!names) { return "" }
-
-      var todisplay = names.filter(x => x.use === "official")[0]
-      if(!todisplay) { todisplay = names[0] } 
-
-      return todisplay.given[0] + " " + todisplay.family
+      return FHIRPatient.displayName(this.patient)
     }
   },
   methods: {
@@ -78,6 +73,7 @@ export default {
             this.sortImmunizations()
 
             this.patient = response.patient
+
           },
           error => {
             console.error(error);

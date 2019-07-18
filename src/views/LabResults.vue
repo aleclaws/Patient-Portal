@@ -20,9 +20,9 @@
       </thead>
       <tbody>
         <tr v-for="labResult in labResults" :key="labResult.id" class="accordion-toggle">
-          <td>{{ labResult.resource.code.text }}</td>
-          <td>{{ labResult.resource.component.length }}</td>
-          <td>{{ labResult.resource.effectiveDateTime }}</td>
+          <td>{{ labResult.code.coding[0].display }}</td>
+          <td>{{ labResult.result.length }}</td>
+          <td>{{ labResult.effectiveDateTime }}</td>
           <td>
             <button
               class="btn btn-light btn-sm"
@@ -67,31 +67,29 @@
 
 <script>
 // @ is an alias to /src
+import FHIRResource from '@/services/FHIRResource'
 
 export default {
   name: "LabResults",
   data: () => {
     return {
       labResults: [],
-      isDetailsShowing: false
+      isDetailsShowing: false,
+      patient: {}
     };
   },
   components: {},
   methods: {
     getAllLabResults() {
-      this.$http
-        .get("http://localhost:5010/api/diagnosticreport")
+      FHIRResource.getLabResults()
         .then(response => {
           console.log(response);
-          this.labResults = response.body.data.entry;
+          this.labResults = response.labResults
+          this.patient = response.patient
         });
     },
     toggleDetails() {
-      if (!this.isDetailsShowing) {
-        this.isDetailsShowing = true;
-      } else {
-        this.isDetailsShowing = false;
-      }
+      this.isDetailsShowing = !this.isDetailsShowing
     }
   },
   beforeMount() {
