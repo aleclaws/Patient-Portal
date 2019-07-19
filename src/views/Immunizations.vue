@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import FHIRResource from '@/services/FHIRResource'
+import FHIRRepository from '@/services/FHIRRepository'
 import FHIRPatient from '@/services/Patient'
 
 
@@ -64,15 +64,15 @@ export default {
   },
   methods: {
     getAllImmunizations() {
-      FHIRResource.getImmunizations()
+      FHIRRepository.getImmunizations()
         .then(
           response => {
             console.log("RESPONSE:", response)
 
-            this.immunizations = response.immunizations
+            this.immunizations = response.Immunization
             this.sortImmunizations()
 
-            this.patient = response.patient
+            this.patient = response.Patient
 
           },
           error => {

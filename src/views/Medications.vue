@@ -44,7 +44,8 @@
 <script>
 // @ is an alias to /src
 import MedicationModal from "@/components/MedicationModal.vue";
-import Medications from '@/services/Medications'
+import FHIRRepository from '@/services/FHIRRepository'
+
 
 export default {
   name: "Medications",
@@ -60,7 +61,7 @@ export default {
   methods: {
     getAllMedications() {
 
-      Medications.fetchList()
+      FHIRRepository.getMedications()
       .then(result => {
 
         console.log(result)

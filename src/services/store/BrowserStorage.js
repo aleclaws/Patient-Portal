@@ -31,4 +31,17 @@ const LocalStorage = {
   }
 };
 
-export default BrowserStorage;
+const SessionStorage = {
+  set: function(key, value) {
+    sessionStorage.setItem(key, value);
+  },
+  get: function(key) {
+    return sessionStorage.getItem(key);
+  },
+  remove: function(key) {
+    sessionStorage.removeItem(key);
+  }
+};
+
+
+export { LocalStorage, SessionStorage }

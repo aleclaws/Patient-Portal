@@ -19,17 +19,33 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="labResult in labResults" :key="labResult.id" class="accordion-toggle">
-          <td>{{ labResult.code.coding[0].display }}</td>
-          <td>{{ labResult.result.length }}</td>
-          <td>{{ labResult.effectiveDateTime }}</td>
-          <td>
-            <button
-              class="btn btn-light btn-sm"
-              @click="toggleDetails()"
-            >DETAILS</button>
-          </td>
-        </tr>
+        <template v-for="report in reports">
+
+          <tr :key="report.id" class="accordion-toggle">
+            <td>{{ report.code.coding[0].display }}</td>
+            <td>{{ report.result.length }}</td>
+            <td>{{ report.effectiveDateTime }}</td>
+            <td>
+              <button
+                class="btn btn-light btn-sm"
+                @click="toggleReportResults(report.id)"
+              >DETAILS</button>
+            </td>
+          </tr>
+
+          <template v-if="opened.includes(report.id)">
+          <tr v-for="result in report.result"  :key="result.reference">
+
+            <td colspan="2">{{ observationForRef(result.reference) }}</td>
+          </tr>
+
+          </template>
+
+        </template>
+
+
+
+
         <tr class="details" v-if="this.isDetailsShowing == true">
           <td>
             <p>Observation: {{labResults[0].resource.component[0].code.text}}</p>
@@ -67,7 +83,7 @@
 
 <script>
 // @ is an alias to /src
-import FHIRResource from '@/services/FHIRResource'
+import FHIRRepository from '@/services/FHIRRepository'
 
 export default {
   name: "LabResults",
@@ -75,22 +91,47 @@ export default {
     return {
       labResults: [],
       isDetailsShowing: false,
-      patient: {}
+
+      patient: {},
+      reports: [],
+      observations: [],
+      opened: [],
+
     };
   },
   components: {},
   methods: {
     getAllLabResults() {
-      FHIRResource.getLabResults()
+      FHIRRepository.getLabResults()
         .then(response => {
           console.log(response);
           this.labResults = response.labResults
-          this.patient = response.patient
+
+          this.reports = response.DiagnosticReport
+          this.observations = response.Observation
+          this.patient = response.Patient
         });
     },
     toggleDetails() {
       this.isDetailsShowing = !this.isDetailsShowing
-    }
+    },
+    observationForRef(ref) {
+      if(!ref) { return null }
+
+      const search_id = ref.slice("Observation/".length);
+
+      const results = this.observations.filter(x => x.id === search_id)
+
+      return results.length ? results[0] : null
+    },
+    toggleReportResults(id) {
+      const index = this.opened.indexOf(id);
+      if (index > -1) {
+        this.opened.splice(index, 1)
+      } else {
+        this.opened.push(id)
+      }
+    }    
   },
   beforeMount() {
     this.getAllLabResults();

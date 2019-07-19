@@ -1,5 +1,5 @@
 
-import BrowserStorage from './BrowserStorage'
+import { LocalStorage } from './store/BrowserStorage'
 
 
 import FPXApi from './api/FPXAPI'
@@ -38,18 +38,18 @@ const CAPABILITIES = {
 
 
 function loadGrantedAccess() {
-	var encoded = BrowserStorage.get("FHIRUserAuthz.granted")
+	var encoded = LocalStorage.get("FHIRUserAuthz.granted")
 	return JSON.parse(encoded)
 }
 function saveGrantedAccess(granted) {
-    BrowserStorage.set("FHIRUserAuthz.granted", JSON.stringify(granted));
+    LocalStorage.set("FHIRUserAuthz.granted", JSON.stringify(granted));
 }
 
 
 function getAuthorizeURL() {
 	const state = uuid.v4()
 
-	BrowserStorage.set("FHIRUserAuthz.state", state)
+	LocalStorage.set("FHIRUserAuthz.state", state)
 
 	const query = {
 		ticket: CAPABILITIES.login.ticket,
@@ -72,11 +72,11 @@ function handleAuthorizeCallback(ticket, state) {
 		return Promise.reject("missing param");		
 	}
 
-	const sentState = BrowserStorage.get("FHIRUserAuthz.state")
+	const sentState = LocalStorage.get("FHIRUserAuthz.state")
 	if(sentState !== state) {
 		return Promise.reject("unknown state");				
 	}
-	BrowserStorage.remove("FHIRUserAuthz.state")
+	LocalStorage.remove("FHIRUserAuthz.state")
 
 	return new Promise(function(resolve, reject) {
 
