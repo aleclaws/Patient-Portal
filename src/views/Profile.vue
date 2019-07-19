@@ -8,7 +8,7 @@
         <img src="./../assets/woman.png" width="200" height="200" border="1"/>
       </b-col>
       <b-col cols="9">
-        <h2>Alice Jacobs</h2>
+        <h2>{{ patientName }}</h2>
         <h4>1234 Vancouver Street</h4>
         <h4>PHN: 9*****6204</h4> 
         <h4>DOB: 1981 FEB 19</h4>
@@ -51,12 +51,14 @@
 </template>
 <script>
 // @ is an alias to /src
+import FHIRRepository from '@/services/FHIRRepository'
+import FHIRPatient from '@/services/Patient'
 
 export default {
   name: "Profile",
   data: () => {
     return {
-      currentPatient: {},
+      patient: {},
       images: {
         profile: require('./../assets/profile.jpg')
       }
@@ -64,13 +66,17 @@ export default {
   },
   methods: {
     getCurrentUserInfo() {
-      this.$http
-        .get("http://hapi.fhir.org/baseDstu3/Patient/422566?_format=json")
+      FHIRRepository.getPatient()
         .then(response => {
-          this.currentPatient = response.body;
+          this.patient = response.Patient[0]
         });
     }
   },
+  computed: {
+    patientName: function() {
+      return FHIRPatient.displayName(this.patient)
+    }
+  },  
   beforeMount() {
     this.getCurrentUserInfo();
   }

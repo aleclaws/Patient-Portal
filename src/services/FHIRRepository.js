@@ -12,6 +12,8 @@ const FHIRRepository = {
 	getImmunizations,
 	getMedications,
 	getLabResults,
+	getPatient,
+
 	resolveReference,
 }
 
@@ -31,14 +33,19 @@ const CachedResources = {
 		})
 
 		SessionStorage.set(key, JSON.stringify(cached))
-	}
+	},
 
+	cached: function(resourceType) {
+		const key = "FHIRRepository.CachedResources." + resourceType
+		const encoded = SessionStorage.get(key)
+		return encoded ? JSON.parse(encoded) : {}
+	}
 }
 
 function parseResources(data) {
     const resources = data.entry.map(x => x.resource)
 
-    const types = ["Immunization", "Patient", "DiagnosticReport", "Observation", "MedicationRequest"]
+    const types = ["Immunization", "Patient", "DiagnosticReport", "Observation", "MedicationRequest", "Medication"]
 
     var found = {}
 
@@ -95,6 +102,17 @@ function getLabResults() {
 
 function getMedications() {
 	return FHIRAPIRequest("medications")
+}
+
+function getPatient() {
+
+	const availblePatients = CachedResources.cached("Patient")
+
+	if(availblePatients) {
+		return Promise.resolve({ Patient: Object.values(availblePatients) })
+	}
+
+	return Promise.reject("no patients")
 }
 
 function resolveReference(reference) {

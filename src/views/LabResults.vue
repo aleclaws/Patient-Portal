@@ -33,25 +33,21 @@
             </td>
           </tr>
 
-          <template v-if="opened.includes(report.id)">
+          <div class='sub-details' v-if="opened.includes(report.id)">
 
-          <th>Result</th>
-          <th>Value</th>
-          <th>Unit</th>
+            <tr>
+              <th>Result</th>
+              <th>Value</th>
+              <th>Unit</th>
+            </tr>
 
-          <tr v-for="result in report.result" :key="result.reference">
+            <tr v-for="result in report.result" :key="result.reference">
+              <td>{{ result.display }}</td>
+              <td>{{ observationForRef(result.reference).valueQuantity.value }}</td>
+              <td>{{ observationForRef(result.reference).valueQuantity.unit }}</td>
+            </tr>
 
-            <template >
-              
-            </template>
-
-            <td>{{ result.display }}</td>
-            <td>{{ observationForRef(result.reference).valueQuantity.value }}</td>
-
-            <td>{{ observationForRef(result.reference).valueQuantity.unit }}</td>
-          </tr>
-
-          </template>
+          </div>
 
         </template>
 
@@ -160,5 +156,10 @@ export default {
 }
 .check-icon {
   color: green
+}
+.sub-details {
+  color: #777777;
+  /*width: 100%;*/
+  padding-left: 50px;
 }
 </style>
