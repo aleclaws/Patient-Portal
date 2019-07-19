@@ -34,9 +34,21 @@
           </tr>
 
           <template v-if="opened.includes(report.id)">
-          <tr v-for="result in report.result"  :key="result.reference">
 
-            <td colspan="2">{{ observationForRef(result.reference) }}</td>
+          <th>Result</th>
+          <th>Value</th>
+          <th>Unit</th>
+
+          <tr v-for="result in report.result" :key="result.reference">
+
+            <template >
+              
+            </template>
+
+            <td>{{ result.display }}</td>
+            <td>{{ observationForRef(result.reference).valueQuantity.value }}</td>
+
+            <td>{{ observationForRef(result.reference).valueQuantity.unit }}</td>
           </tr>
 
           </template>
