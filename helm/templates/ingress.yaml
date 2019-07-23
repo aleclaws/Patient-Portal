@@ -1,0 +1,27 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}
+{{- with .Values.ingress.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  rules:
+  - host: {{ .Values.domain.name }}
+    http:
+      paths:
+        - path: /
+          backend:
+            serviceName: {{ .Release.Name }}
+            servicePort: 8080
+        - path: /*
+          backend:
+            serviceName: {{ .Release.Name }}
+            servicePort: 8080
+  tls:
+  - hosts: 
+    - {{ .Values.domain.name }}
+    secretName: {{ .Release.Name }}-cert
+{{- end }}

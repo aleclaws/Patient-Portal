@@ -1,0 +1,39 @@
+# Default values for helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+refresh: 1
+
+replicaCount: 1
+
+domain:
+  name: bc-portal.fpe.dev.identos.ca
+
+service:
+  type: NodePort
+
+application:
+  port: 8080
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    certmanager.k8s.io/acme-challenge-type: dns01
+    certmanager.k8s.io/acme-dns01-provider: aws-dns
+    nginx.ingress.kubernetes.io/backend-protocol: HTTP
+
+image:
+  credentials: identos
+  repository: registry.git.identos.ca/sbic/demo-service-providers/patient-portal
+  tag: latest-development
+  pullPolicy: Always
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
