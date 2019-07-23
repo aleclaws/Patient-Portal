@@ -19,17 +19,41 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="labResult in labResults" :key="labResult.id" class="accordion-toggle">
-          <td>{{ labResult.resource.code.text }}</td>
-          <td>{{ labResult.resource.component.length }}</td>
-          <td>{{ labResult.resource.effectiveDateTime }}</td>
-          <td>
-            <button
-              class="btn btn-light btn-sm"
-              @click="toggleDetails()"
-            >DETAILS</button>
-          </td>
-        </tr>
+        <template v-for="report in reports">
+
+          <tr :key="report.id" class="accordion-toggle">
+            <td>{{ report.code.coding[0].display }}</td>
+            <td>{{ report.result.length }}</td>
+            <td>{{ report.effectiveDateTime }}</td>
+            <td>
+              <button
+                class="btn btn-light btn-sm"
+                @click="toggleReportResults(report.id)"
+              >DETAILS</button>
+            </td>
+          </tr>
+
+          <div class='sub-details' v-if="opened.includes(report.id)">
+
+            <tr>
+              <th>Result</th>
+              <th>Value</th>
+              <th>Unit</th>
+            </tr>
+
+            <tr v-for="result in report.result" :key="result.reference">
+              <td>{{ result.display }}</td>
+              <td>{{ observationForRef(result.reference).valueQuantity.value }}</td>
+              <td>{{ observationForRef(result.reference).valueQuantity.unit }}</td>
+            </tr>
+
+          </div>
+
+        </template>
+
+
+
+
         <tr class="details" v-if="this.isDetailsShowing == true">
           <td>
             <p>Observation: {{labResults[0].resource.component[0].code.text}}</p>
@@ -67,32 +91,55 @@
 
 <script>
 // @ is an alias to /src
+import FHIRRepository from '@/services/FHIRRepository'
 
 export default {
   name: "LabResults",
   data: () => {
     return {
       labResults: [],
-      isDetailsShowing: false
+      isDetailsShowing: false,
+
+      patient: {},
+      reports: [],
+      observations: [],
+      opened: [],
+
     };
   },
   components: {},
   methods: {
     getAllLabResults() {
-      this.$http
-        .get("http://localhost:5010/api/diagnosticreport")
+      FHIRRepository.getLabResults()
         .then(response => {
           console.log(response);
-          this.labResults = response.body.data.entry;
+          this.labResults = response.labResults
+
+          this.reports = response.DiagnosticReport
+          this.observations = response.Observation
+          this.patient = response.Patient
         });
     },
     toggleDetails() {
-      if (!this.isDetailsShowing) {
-        this.isDetailsShowing = true;
+      this.isDetailsShowing = !this.isDetailsShowing
+    },
+    observationForRef(ref) {
+      if(!ref) { return null }
+
+      const search_id = ref.slice("Observation/".length);
+
+      const results = this.observations.filter(x => x.id === search_id)
+
+      return results.length ? results[0] : null
+    },
+    toggleReportResults(id) {
+      const index = this.opened.indexOf(id);
+      if (index > -1) {
+        this.opened.splice(index, 1)
       } else {
-        this.isDetailsShowing = false;
+        this.opened.push(id)
       }
-    }
+    }    
   },
   beforeMount() {
     this.getAllLabResults();
@@ -109,5 +156,10 @@ export default {
 }
 .check-icon {
   color: green
+}
+.sub-details {
+  color: #777777;
+  /*width: 100%;*/
+  padding-left: 50px;
 }
 </style>

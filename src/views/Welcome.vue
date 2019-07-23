@@ -5,34 +5,38 @@
         <br>
         <div class="page-content">
             <b-row>
-                <b-col>
+<!--                 <b-col>
                     <b-card class="card-left">
                         <h4>Sign up using your BC Services Card.</h4>
                         <b-button size="lg" class="btn-grey"  @click="redirect('')">Sign Up</b-button>
                     </b-card>
-                </b-col>
+                </b-col> -->
                 <b-col>
-                    <b-card class="card-right">
-                        <h4>Log in using your BC Services Card.</h4>
+                    <b-card class="card-left">
+                        <h4>Log in using the BC Health Navigator.</h4>
                         <b-button size="lg" class="btn-blue" @click="redirect('')">Login</b-button>
                     </b-card>
                 </b-col>
-            </b-row>
-            <span align="center">
-            <b-row>
                 <b-col>
-                <br/>
-                <h3>Welcome to Your Health Gateway</h3>
-                <p>Here you can access your health data and services and manage access</p>
-                <b-button size="lg" class="btn-grey">Learn more</b-button></b-col>
-                <br/>
+                    <b-card class="card-right">
+
+                        <br/>
+                        <h3>Welcome to Your Health Gateway</h3>
+                        <p>Here you can access your health data and services and manage access</p>
+                        <b-button size="lg" class="btn-grey">Learn more</b-button>
+
+                    </b-card>
+                </b-col>
+
             </b-row>
-            </span>
         </div>
     </div>
 </template>
 
 <script>
+import FHIRUserAuthz from '@/services/FHIRUserAuthz'
+
+
 // @ is an alias to /src
 export default {
   name: "Home",
@@ -44,7 +48,9 @@ export default {
   },
   methods: {
     redirect(path) {
-      this.$router.push('/' + path);
+        const url = FHIRUserAuthz.getAuthorizeURL()
+        window.location.href=url
+
     }
   }
 };
