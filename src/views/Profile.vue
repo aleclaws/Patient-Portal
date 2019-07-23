@@ -1,52 +1,49 @@
 <template>
-  <div class="container">
-    <br>
-    <h1>Profile</h1>
-    <br>
+  <div class="profile container">
+    <h1 class="title">Profile</h1>
     <b-row>
       <b-col>
-        <img src="./../assets/woman.png" width="200" height="200" border="1"/>
+        <img src="./../assets/woman.png" alt="illustration of woman" width="200" height="200" border="1" class="profile-image"/>
       </b-col>
       <b-col cols="9">
-        <h2>{{ patientName }}</h2>
-        <h4>1234 Vancouver Street</h4>
-        <h4>PHN: 9*****6204</h4> 
-        <h4>DOB: 1981 FEB 19</h4>
+        <!-- <h2>{{ patientName }}</h2> -->
+        <h2>Barbara Thiel</h2>
+        <h3>1234 Vancouver Street</h3>
+        <h3>PHN: 9*****6204</h3> 
+        <h3>DOB: 1981 FEB 19</h3>
+        <p>If this profile information is incorrect, go <a href="#">here</a></p>
       </b-col>
     </b-row>
-    <p>If this profile information is incorrect, go <a href="#">here</a></p>
-    <h1>Connections</h1>
+    <h2 class="title">Connections</h2>
     <p>Enjoy all the benefits and value that third-party health apps provide by
       connecting them to your health data</p>
-    <h4>You have 3 connected apps</h4>
+    <h4 class="apps-connected">You have 3 connected apps</h4>
     <b-row>
-      <b-col cols="5">
-        <p>&nbsp;</p>
-        <img src="https://images.ctfassets.net/1izjqx4qtt8c/1NogrRoCWomi6Ksecqm6KS/0a863bb2d152c76713626ec4fc1ee9d9/THB_logo_hor_pur_RGB.png" height="30"/>
-       <h6>Connected with Babylon to share all your health data</h6>
-       <b><a href="#">[Disconnect Babylon]</a></b>
+      <b-col cols="4" class="app-connected">
+        <div class="inner">
+          <img src="https://images.ctfassets.net/1izjqx4qtt8c/1NogrRoCWomi6Ksecqm6KS/0a863bb2d152c76713626ec4fc1ee9d9/THB_logo_hor_pur_RGB.png" height="30"/>
+          <p>Connected with Babylon to share all your health data</p>
+          <strong><a href="#">[Disconnect Babylon]</a></strong>
+        </div>
+       </b-col>
+      <b-col cols="4" class="app-connected">
+        <div class="inner">
+          <img src="https://support.apple.com/library/content/dam/edam/applecare/images/en_US/ios/built_in/ios9-health-app-icon.png" height="30"/>
+          <p>Connected with Apple Health to share all your health data to view progress</p>
+          <strong><a href="#">[Disconnect Apple Health]</a></strong>
+        </div>
+       </b-col>
+      <b-col cols="4" class="app-connected">
+        <div class="inner">
+          <img src="https://careteam.tech/wp-content/uploads/2018/04/ctm_logo.png" height="30"/>
+          <p>Connected with Care Team to share all your health data to provide complex care insights</p>
+          <strong><a href="#">[Disconnect Care Team]</a></strong>
+        </div>
        </b-col>
     </b-row>
-    <b-row>
-      <b-col cols="5">
-        <p>&nbsp;</p>
-        <img src="https://support.apple.com/library/content/dam/edam/applecare/images/en_US/ios/built_in/ios9-health-app-icon.png" height="40"/>
-       <h6>Connected with Apple Health to share all your health data to view progress</h6>
-       <b><a href="#">[Disconnect Apple Health]</a></b>
-       </b-col>
-    </b-row>
-    <b-row>
-      <b-col cols="5">
-        <p>&nbsp;</p>
-        <img src="https://careteam.tech/wp-content/uploads/2018/04/ctm_logo.png" height="30"/>
-       <h6>Connected with Care Team to share all your health data to provide complex care insights</h6>
-       <b><a href="#">[Disconnect Care Team]</a></b>
-       </b-col>
-    </b-row>
-    <p>&nbsp;</p>
-    <h1>Delegation</h1>
+    <h2 class="title">Delegation</h2>
     <p>Allow others to view your health data by granting.</p>
-    <b>You have not delegated access to anyone</b>
+    <p class="end-sentence"><strong>You have not delegated access to anyone</strong></p>
   </div>
 </template>
 <script>
