@@ -7,7 +7,7 @@ refresh: 1
 replicaCount: 1
 
 domain:
-  name: portal.idnorth.demo.identos.ca
+  name: bc-portal.fpe.dev.identos.ca
 
 service:
   type: NodePort
