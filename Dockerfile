@@ -2,6 +2,6 @@ FROM php:7.2-apache
 
 RUN a2enmod rewrite
 
-COPY build /var/www/html
+COPY dist /var/www/html
 
 
