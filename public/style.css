@@ -1,0 +1,35 @@
+.profile h3 {
+    font-size: 24px;
+}
+
+.profile-image {
+    border: 1px solid #000;
+    border-radius: 4px;
+}
+
+.title {
+    margin: 30px 0 15px;
+    font-size: 2.5rem;
+}
+
+.apps-connected {
+    margin: 40px 0 20px;
+}
+
+.inner {
+    border: 1px solid lightgrey;
+    border-radius: 4px;
+    padding: 15px;
+}
+
+.app-connected img {
+    margin: 5px 0 10px;
+}
+
+.end-sentence {
+    padding-bottom: 100px;
+}
+
+.medications-title, .lab-results-title {
+    margin-bottom: 20px;
+}

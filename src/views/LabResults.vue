@@ -2,7 +2,7 @@
   <div class="container">
     <br>
 
-    <h1><font-awesome-icon icon="flask"></font-awesome-icon> Lab Results</h1>
+    <h1 class="lab-results-title"><font-awesome-icon icon="flask"></font-awesome-icon> Lab Results</h1>
     <table class="table">
       <thead>
         <tr>
