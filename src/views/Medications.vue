@@ -19,15 +19,14 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="medication in medications" :key="medication.id">
-          <!-- <td>{{ medication.resource.id }}</td> -->
-          <td>{{ medication.medicationCodeableConcept ? medication.medicationCodeableConcept.coding[0].display : medication.contained[0].code.coding[0].display }}</td>
-          <td>{{ medication.dosageInstruction[0].text }}</td>
-          <td>{{ medication.authoredOn }}</td>
-          <td>{{ medication.dispenseRequest.validityPeriod.end }}</td>
-          <td>{{ medication.dispenseRequest.numberOfRepeatsAllowed }}</td>
-          <td>
-            <b-btn @click="openModal(medication)" class="btn btn-light btn-sm">DETAILS</b-btn>
+        <tr v-for="request in medicationRequests" :key="request.id">
+          <td>{{ requestMedName(request) }}</td>
+          <td>{{ requestMedDosage(request) }}</td>
+          <td>{{ request.authoredOn }}</td>
+          <td>N/A</td>
+          <td>{{ requestRenewalsLeft(request) }}</td>
+          <!-- <td> -->
+            <b-btn @click="openModal(request)" class="btn btn-light btn-sm">DETAILS</b-btn>
           </td>
         </tr>
       </tbody>
@@ -44,36 +43,79 @@
 <script>
 // @ is an alias to /src
 import MedicationModal from "@/components/MedicationModal.vue";
+import FHIRRepository from '@/services/FHIRRepository'
+
+
 export default {
   name: "Medications",
   data: () => {
     return {
       hasMedications: true,
-      medications: []
+      medicationRequests: [],
+      medications: [],
+      patient: {}
     };
   },
   components: {
     "medicaiton-modal": MedicationModal
   },
   methods: {
-    getAllMedications() {
-      this.$http
-        .get(
-          "http://localhost:5000/api/medicationrequest"
-        )
-        .then(
-          response => {
-            console.log(response)
-            this.medications = response.body.medicationrequests;
-            if (this.medications.length > 0) {
-              this.hasMedications = true;
-            }
-          }
-        );
+    requestMedName(request) {
+      return this.medicationForRef(request.medicationReference.reference).code.text
     },
-    openModal(medicationRow) {
-      console.log(medicationRow)
-    }
+    requestRenewalsLeft(request) {
+      if(!request.dispenseRequest) { return "0" }
+      return request.dispenseRequest.numberOfRepeatsAllowed
+    },
+    requestMedDosage(request) {
+      if (request.dosageInstruction) {
+        const instructions = request.dosageInstruction[0]
+
+        if(instructions.asNeededBoolean) { 
+          return "As Needed"
+        }
+        if(instructions.timing) {
+          const quantity = instructions.doseQuantity.value
+          const repeat = instructions.timing.repeat
+
+          if(repeat.frequency === 1) {
+          return "Take " + quantity + " every " + repeat.period + repeat.periodUnit
+
+          }
+
+          return "Take " + quantity + " dose " + repeat.frequency + " times per " + repeat.period + repeat.periodUnit
+
+        }
+        
+        return request.dosageInstruction[0]
+      }
+      return "N/A"
+    },    
+    getAllMedications() {
+
+      FHIRRepository.getMedications()
+      .then(response => {
+
+        console.log(response)
+
+        this.patient = response.Patient
+        this.medicationRequests = response.MedicationRequest
+        this.medications = response.Medication
+      })
+
+    },
+    openModal(request) {
+      console.log(request)
+    },
+    medicationForRef(ref) {
+      if(!ref) { return null }
+
+      const search_id = ref.slice("Medication/".length);
+
+      const results = this.medications.filter(x => x.id === search_id)
+
+      return results.length ? results[0] : null
+    },    
   },
 
   beforeMount() {

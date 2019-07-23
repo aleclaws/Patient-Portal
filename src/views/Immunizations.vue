@@ -1,14 +1,11 @@
 <template>
   <div class="container">
     <br>
-    <h1><font-awesome-icon icon="syringe"></font-awesome-icon> Immunizations</h1>
+    <h1><font-awesome-icon icon="syringe"></font-awesome-icon>&nbsp;Immunizations</h1>
     <div>
       <b-form-group>
         <div @click="this.getAllImmunizations" >
-          <b-form-radio v-model="patient" name="patient" value="Alice">Alice Jacobs</b-form-radio>
-        </div>
-        <div @click="this.getAllImmunizationsForChild">
-          <b-form-radio v-model="patient" name="patient" value="Alex">Alex Jacobs</b-form-radio>
+          {{ patientName }}
         </div>
       </b-form-group>
     </div>
@@ -18,25 +15,25 @@
           <th>Immunization ID</th>
           <th>Immunization Name</th>
           <th>
-            <button class="btn btn-light" @click="sortImmunizations()">
+            <button class="btn btn-light" @click="toggleImmunizationSort()">
               <font-awesome-icon icon="arrows-alt-v"/>
             </button>
             Most Recent Administration (YYYY-MM-DD)
           </th>
           <th>
-            <a v-if="this.patient === 'Alex'" href="https://drive.google.com/open?id=14bmr-ABh0uJQNRqQvIynnVGAI1EodCJU">
+            <a v-if="this.showCertificate" href="https://drive.google.com/open?id=14bmr-ABh0uJQNRqQvIynnVGAI1EodCJU">
               <button class="btn btn-primary">Download Certificate</button>
             </a>
           </th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="immunization in immunizations" :key="immunization.lotNumber">
-          <td>{{ immunization.lotNumber }}</td>
+        <tr v-for="immunization in immunizations" :key="immunization.id" >
+          <td>{{ immunization.id }}</td>
           <td>{{ immunization.vaccineCode.text }}</td>
-          <td>{{ immunization.occurrenceDateTime }}</td>
+          <td>{{ immunization.date }}</td>
           <td>
-            <button class="btn btn-light btn-sm" @click="openImmunizationModal(immunization.resource)">DETAILS</button>
+            <button class="btn btn-light btn-sm" @click="openImmunizationModal(immunization)">DETAILS</button>
           </td>
         </tr>
       </tbody>
@@ -45,67 +42,57 @@
 </template>
 
 <script>
+import FHIRRepository from '@/services/FHIRRepository'
+import FHIRPatient from '@/services/Patient'
+
+
 // @ is an alias to /src
 export default {
   name: "Immunizations",
   data: () => {
     return {
       immunizations: [],
-      sort: "new-to-old",
-      patient: "Alice"
+      sort: "new-to-old", 
+      patient: {},
+      showCertificate: false
     };
+  },
+  computed: {
+    patientName: function() {
+      return FHIRPatient.displayName(this.patient)
+    }
   },
   methods: {
     getAllImmunizations() {
-      this.$http
-        .get("http://localhost:5005/api/immunization")
+      FHIRRepository.getImmunizations()
         .then(
           response => {
             console.log("RESPONSE:", response)
-            this.immunizations = response.body.immunizations;
-            this.sortImmunizations();
-            this.patient = "Alice"
+
+            this.immunizations = response.Immunization
+            this.sortImmunizations()
+
+            this.patient = response.Patient
+
           },
-          response => {
-            console.error(response);
+          error => {
+            console.error(error);
           }
         );
     },
-    getAllImmunizationsForChild() {
-      this.$http
-        .get("http://localhost:5005/api/immunization/child")
-        .then(
-          response => {
-            console.log("RESPONSE:", response)
-            this.immunizations = response.body.immunizations;
-            this.sortImmunizations();
-            this.patient = "Alex"
-          },
-          response => {
-            console.error(response);
-          }
-        );
+    toggleImmunizationSort() {
+      this.sort = this.sort === "new-to-old" ? "old-to-new" : "new-to-old"
+      this.sortImmunizations()
     },
     sortImmunizations() {
-      let val1, val2;
-      if (this.sort === "new-to-old") {
-        val1 = 1;
-        val2 = -1;
-        this.sort = "old-to-new";
-      } else {
-        val1 = -1;
-        val2 = 1;
-        this.sort = "new-to-old";
-      }
-      this.immunizations = this.immunizations.sort((a, b) => {
-        if (a.occurrenceDateTime < b.occurrenceDateTime) {
-          return val1;
-        }
-        if (a.occurrenceDateTime > b.occurrenceDateTime) {
-          return val2;
-        }
-        return 0;
+
+      const sortType = this.sort
+      const sorted = this.immunizations.sort(function(a,b){
+        const diff = new Date(b.date) - new Date(a.date)
+        return sortType === "new-to-old" ? diff : -diff;
       });
+
+      this.immunizations = sorted
     },
     openImmunizationModal(immunizationRow) {
       console.log(immunizationRow);
