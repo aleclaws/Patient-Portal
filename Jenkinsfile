@@ -1,4 +1,4 @@
-@Library(['ReactCI@master', 'GitlabWebhook@master', 'GoogleChatWebhook@master']) _
+@Library(['ReactCI@master', 'GitlabWebhook@master']) _
 
 react(url: 'sbic/patient-portal',
 	  containerBranches: ['master', 'development'],
