@@ -15,8 +15,6 @@ service:
 application:
   port: 8080
 
-env: "VUE_APP_FPX_CLIENT_AUTHZ_BASIC=YmMtZXhhbXBsZTEtY2xpZW50LWlkOmJjLWV4YW1wbGUxLWNsaWVudC1zZWNyZXQ="
-
 ingress:
   enabled: true
   annotations:

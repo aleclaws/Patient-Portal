@@ -31,14 +31,6 @@ spec:
             value: "{{ .Values.refresh }}"
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-          volumeMounts:
-            - name: config
-              mountPath: .env
-              subPath: .env
-      volumes:
-        - name: config
-          configMap:
-            name: {{ .Release.Name }}-env-config
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
