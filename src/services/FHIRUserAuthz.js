@@ -54,7 +54,8 @@ function getAuthorizeURL() {
 	const query = {
 		ticket: CAPABILITIES.login.ticket,
 		client_id: AS_CLIENT_ID,
-		claims_redirect_uri: "http://localhost:8085/redirect/datasync",
+//		claims_redirect_uri: "http://localhost:8085/redirect/datasync",
+		claims_redirect_uri: "https://portal.bcmoh.demo.identos.ca/redirect/datasync",
 		scope: "ax",
 		grant_type: "urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Auma-ticket",
 		login_hint: "bcmoh_wallet",
