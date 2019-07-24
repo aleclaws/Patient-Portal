@@ -6,8 +6,7 @@
         <img src="./../assets/woman.png" alt="illustration of woman" width="200" height="200" border="1" class="profile-image"/>
       </b-col>
       <b-col cols="9">
-        <!-- <h2>{{ patientName }}</h2> -->
-        <h2>Barbara Thiel</h2>
+        <h2>{{ patientName }}</h2>
         <h3>1234 Vancouver Street</h3>
         <h3>PHN: 9*****6204</h3> 
         <h3>DOB: 1981 FEB 19</h3>
