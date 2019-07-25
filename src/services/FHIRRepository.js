@@ -44,6 +44,7 @@ const CachedResources = {
 }
 
 function parseResources(data) {
+	if(!data.entry) { return {} }
     const resources = data.entry.map(x => x.resource)
 
     const types = ["Immunization", "Patient", "DiagnosticReport", "Observation", "MedicationRequest", "Medication"]
@@ -99,7 +100,7 @@ function anyResources(resourceType) {
 
 return FHIRAPIRequest(resourceType)
 		.catch(error => {
-			
+
 			var meta = {offline: true}
 			if(error === "bad authz") { 
 				meta.needsLogin = true
@@ -150,7 +151,7 @@ function resolveReference(reference) {
       	}
       }
 
-      return results.length ? results[0] : null
+      return null
 }
 
 

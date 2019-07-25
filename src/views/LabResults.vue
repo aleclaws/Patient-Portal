@@ -43,8 +43,8 @@
 
             <tr v-for="result in report.result" :key="result.reference">
               <td>{{ result.display }}</td>
-              <td>{{ observationForRef(result.reference).valueQuantity.value }}</td>
-              <td>{{ observationForRef(result.reference).valueQuantity.unit }}</td>
+              <td>{{ valueQuantityForObservationRef(result.reference) }}</td>
+              <td>{{ valueUnitForObservationRef(result.reference) }}</td>
             </tr>
 
           </div>
@@ -126,7 +126,17 @@ export default {
     },
     observationForRef(ref) {
       if(!ref) { return null }
-      return FHIRRepository.resolveReference(ref)
+      return FHIRRepository.resolveReference(ref) || {}
+    },
+    valueQuantityForObservationRef(ref) {
+      const obs = this.observationForRef(ref)
+      if(obs && obs.valueQuantity) { return obs.valueQuantity.value }
+      return null
+    },
+    valueUnitForObservationRef(ref) {
+      const obs = this.observationForRef(ref)
+      if(obs && obs.valueQuantity) { return obs.valueQuantity.unit }
+      return null
     },
     toggleReportResults(id) {
       const index = this.opened.indexOf(id);
