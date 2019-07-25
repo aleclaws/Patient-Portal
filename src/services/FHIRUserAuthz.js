@@ -1,5 +1,5 @@
 
-import { LocalStorage } from './store/BrowserStorage'
+import { LocalStorage, SessionStorage } from './store/BrowserStorage'
 
 
 import FPXApi from './api/FPXAPI'
@@ -11,9 +11,13 @@ var jwt_decode = require('jwt-decode');
 
 const FHIRUserAuthz = {
 
+	doLoginRedirect,
 	getAuthorizeURL,
+	isLoggedIn,
+
 	handleAuthorizeCallback,
-	getGrantedPermission
+	getGrantedPermission, 
+	logout
 }
 
 const AS_HOST = "https://authserver.idnorth.demo.identos.ca"
@@ -24,9 +28,10 @@ const AS_CLIENT_ID = "bc-example1-client-id"
 const AS_TICKET_ID = "bc-services-ticket-1"
 
 const RESOURCES = {
-	"medications" : "5000",
-	"lab_results" : "6000",
-	"immunization": "1000"
+	"MedicationRequest" : "5000",
+	"DiagnosticReport" : "6000",
+	"Immunization": "1000",
+	"Patient" : "7000"
 }
 
 const CAPABILITIES = {
@@ -36,20 +41,34 @@ const CAPABILITIES = {
 	}
 }
 
+const LOCALSTORAGEKEYS= {
+	granted: "FHIRUserAuthz.granted",
+	state: "FHIRUserAuthz.state"
+}
+
+
 
 function loadGrantedAccess() {
-	var encoded = LocalStorage.get("FHIRUserAuthz.granted")
+	var encoded = LocalStorage.get(LOCALSTORAGEKEYS.granted)
 	return JSON.parse(encoded)
 }
 function saveGrantedAccess(granted) {
-    LocalStorage.set("FHIRUserAuthz.granted", JSON.stringify(granted));
+    LocalStorage.set(LOCALSTORAGEKEYS.granted, JSON.stringify(granted));
 }
 
+function isLoggedIn() {
+	return !!loadGrantedAccess()
+}
+
+function doLoginRedirect() {
+    const url = FHIRUserAuthz.getAuthorizeURL()
+    window.location.href=url
+}
 
 function getAuthorizeURL() {
 	const state = uuid.v4()
 
-	LocalStorage.set("FHIRUserAuthz.state", state)
+	LocalStorage.set(LOCALSTORAGEKEYS.state, state)
 
 	const query = {
 		ticket: CAPABILITIES.login.ticket,
@@ -73,11 +92,11 @@ function handleAuthorizeCallback(ticket, state) {
 		return Promise.reject("missing param");		
 	}
 
-	const sentState = LocalStorage.get("FHIRUserAuthz.state")
+	const sentState = LocalStorage.get(LOCALSTORAGEKEYS.state)
 	if(sentState !== state) {
 		return Promise.reject("unknown state");				
 	}
-	LocalStorage.remove("FHIRUserAuthz.state")
+	LocalStorage.remove(LOCALSTORAGEKEYS.state)
 
 	return new Promise(function(resolve, reject) {
 
@@ -109,6 +128,12 @@ function getGrantedPermission(res_type) {
 		}
 	};
 	return null
+}
+
+function logout() {
+	LocalStorage.remove(LOCALSTORAGEKEYS.granted)
+	LocalStorage.remove(LOCALSTORAGEKEYS.state)
+	SessionStorage.clear()	
 }
 
 export default FHIRUserAuthz;

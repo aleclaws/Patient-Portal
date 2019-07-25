@@ -118,19 +118,15 @@ export default {
           this.reports = response.DiagnosticReport
           this.observations = response.Observation
           this.patient = response.Patient
-        });
+        })
+
     },
     toggleDetails() {
       this.isDetailsShowing = !this.isDetailsShowing
     },
     observationForRef(ref) {
       if(!ref) { return null }
-
-      const search_id = ref.slice("Observation/".length);
-
-      const results = this.observations.filter(x => x.id === search_id)
-
-      return results.length ? results[0] : null
+      return FHIRRepository.resolveReference(ref)
     },
     toggleReportResults(id) {
       const index = this.opened.indexOf(id);

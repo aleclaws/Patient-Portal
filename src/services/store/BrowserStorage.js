@@ -40,6 +40,9 @@ const SessionStorage = {
   },
   remove: function(key) {
     sessionStorage.removeItem(key);
+  },
+  clear: function() {
+    sessionStorage.clear()
   }
 };
 

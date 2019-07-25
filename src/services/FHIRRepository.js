@@ -28,6 +28,7 @@ const CachedResources = {
 		const encoded = SessionStorage.get(key)
 		var cached = encoded ? JSON.parse(encoded) : {}
 			
+
 		resources.forEach(res => {
 			cached[res.id] = res
 		})
@@ -83,8 +84,34 @@ function FHIRAPIRequest(permission) {
 
 			resolve(returned)
 		},
-		(error) => reject(error))
+		(error) => {
+			if(error.response.status == 401) {
+				return reject("bad authz")
+			}
+			reject(error)
+		})
 	})
+
+}
+
+
+function anyResources(resourceType) {
+
+return FHIRAPIRequest(resourceType)
+		.catch(error => {
+			
+			var meta = {offline: true}
+			if(error === "bad authz") { 
+				meta.needsLogin = true
+			}
+
+			const cached = Object.values(CachedResources.cached(resourceType))
+
+			var res = {}	
+			res[resourceType] = cached
+			res.meta = meta
+			return Promise.resolve(res)	  
+		})
 
 }
 
@@ -92,31 +119,38 @@ function FHIRAPIRequest(permission) {
 	medications, immunization, lab_results
 */
 function getImmunizations() {
-	return FHIRAPIRequest("immunization")
+	return anyResources("Immunization")
 }
 
 function getLabResults() {
-	return FHIRAPIRequest("lab_results")
+	return anyResources("DiagnosticReport")
 }
 
-
 function getMedications() {
-	return FHIRAPIRequest("medications")
+	return anyResources("MedicationRequest")
 }
 
 function getPatient() {
-
-	const availblePatients = CachedResources.cached("Patient")
-
-	if(availblePatients) {
-		return Promise.resolve({ Patient: Object.values(availblePatients) })
-	}
-
-	return Promise.reject("no patients")
+	return anyResources("Patient")
 }
 
 function resolveReference(reference) {
+      if(!reference) { return null }
 
+
+      const parts = reference.split('/', 2);
+	  const resid = parts[1]
+	  const resourceType = parts[0]
+
+      const resourcesOfType = CachedResources.cached(resourceType)
+
+      for (const [key, value] of Object.entries(resourcesOfType)) {
+      	if(key === resid) {
+      		return value
+      	}
+      }
+
+      return results.length ? results[0] : null
 }
 
 
