@@ -48,9 +48,7 @@ export default {
   },
   methods: {
     redirect(path) {
-        const url = FHIRUserAuthz.getAuthorizeURL()
-        window.location.href=url
-
+        FHIRUserAuthz.doLoginRedirect()
     }
   }
 };

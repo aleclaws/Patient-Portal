@@ -13,6 +13,9 @@
         <p>If this profile information is incorrect, go <a href="#">here</a></p>
       </b-col>
     </b-row>
+    <button class="btn btn-primary" v-on:click="logout()">
+      Logout
+    </button>    
     <h2 class="title">Connections</h2>
     <p>Enjoy all the benefits and value that third-party health apps provide by
       connecting them to your health data</p>
@@ -49,6 +52,7 @@
 // @ is an alias to /src
 import FHIRRepository from '@/services/FHIRRepository'
 import FHIRPatient from '@/services/Patient'
+import FHIRUserAuthz from '@/services/FHIRUserAuthz'
 
 export default {
   name: "Profile",
@@ -66,6 +70,10 @@ export default {
         .then(response => {
           this.patient = response.Patient[0]
         });
+    },
+    logout() {
+      FHIRUserAuthz.logout()
+      this.$router.push('/login')
     }
   },
   computed: {

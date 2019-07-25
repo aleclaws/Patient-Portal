@@ -25,7 +25,7 @@
           <td>{{ request.authoredOn }}</td>
           <td>N/A</td>
           <td>{{ requestRenewalsLeft(request) }}</td>
-          <!-- <td> -->
+          <td>
             <b-btn @click="openModal(request)" class="btn btn-light btn-sm">DETAILS</b-btn>
           </td>
         </tr>
