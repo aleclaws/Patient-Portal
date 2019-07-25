@@ -13,6 +13,7 @@ const FHIRUserAuthz = {
 
 	doLoginRedirect,
 	getAuthorizeURL,
+	isLoggedIn,
 
 	handleAuthorizeCallback,
 	getGrantedPermission, 
@@ -46,12 +47,17 @@ const LOCALSTORAGEKEYS= {
 }
 
 
+
 function loadGrantedAccess() {
 	var encoded = LocalStorage.get(LOCALSTORAGEKEYS.granted)
 	return JSON.parse(encoded)
 }
 function saveGrantedAccess(granted) {
     LocalStorage.set(LOCALSTORAGEKEYS.granted, JSON.stringify(granted));
+}
+
+function isLoggedIn() {
+	return !!loadGrantedAccess()
 }
 
 function doLoginRedirect() {

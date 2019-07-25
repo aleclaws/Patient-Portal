@@ -1,12 +1,16 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import FHIRUserAuthz from './services/FHIRUserAuthz';
+
 import Home from './views/Home.vue';
 import Welcome from './views/Welcome.vue';
 import FHIRRedirect from './views/FHIRRedirect.vue';
 
+
 Vue.use(Router);
 
-export default new Router({
+
+const router = new Router({
   mode: 'history',
   routes: [
     {
@@ -60,4 +64,16 @@ export default new Router({
       component: FHIRRedirect
     },
   ],
-});
+})
+router.beforeEach((to, from, next) => {
+  if(FHIRUserAuthz.isLoggedIn()) { 
+    next() 
+  }
+  else if(['login', 'fhir-redirect'].includes(to.name))  
+    next() 
+  else {
+    next({name: 'login'})
+  }
+})
+
+export default router
