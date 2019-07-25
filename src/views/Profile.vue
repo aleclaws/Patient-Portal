@@ -12,10 +12,7 @@
         <h3>DOB: 1981 FEB 19</h3>
         <p>If this profile information is incorrect, go <a href="#">here</a></p>
       </b-col>
-    </b-row>
-    <button class="btn btn-primary" v-on:click="logout()">
-      Logout
-    </button>    
+    </b-row>  
     <h2 class="title">Connections</h2>
     <p>Enjoy all the benefits and value that third-party health apps provide by
       connecting them to your health data</p>
@@ -46,6 +43,12 @@
     <h2 class="title">Delegation</h2>
     <p>Allow others to view your health data by granting.</p>
     <p class="end-sentence"><strong>You have not delegated access to anyone</strong></p>
+    <div>
+      <button class="btn btn-outline-danger" v-on:click="logout()">
+        Logout
+      </button>      
+    </div>
+    <br/>
   </div>
 </template>
 <script>
