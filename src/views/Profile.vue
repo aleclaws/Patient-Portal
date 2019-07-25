@@ -69,7 +69,8 @@ export default {
       FHIRRepository.getPatient()
         .then(response => {
           this.patient = response.Patient[0]
-        });
+        })
+
     },
     logout() {
       FHIRUserAuthz.logout()

@@ -72,13 +72,11 @@ export default {
             this.immunizations = response.Immunization
             this.sortImmunizations()
 
-            this.patient = response.Patient
+            this.patient = FHIRRepository.resolveReference(this.immunizations[0].patient.reference)
 
-          },
-          error => {
-            console.error(error);
           }
-        );
+        )
+
     },
     toggleImmunizationSort() {
       this.sort = this.sort === "new-to-old" ? "old-to-new" : "new-to-old"

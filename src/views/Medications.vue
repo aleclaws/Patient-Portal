@@ -103,18 +103,14 @@ export default {
         this.medications = response.Medication
       })
 
+
     },
     openModal(request) {
       console.log(request)
     },
     medicationForRef(ref) {
       if(!ref) { return null }
-
-      const search_id = ref.slice("Medication/".length);
-
-      const results = this.medications.filter(x => x.id === search_id)
-
-      return results.length ? results[0] : null
+      return FHIRRepository.resolveReference(ref)
     },    
   },
 

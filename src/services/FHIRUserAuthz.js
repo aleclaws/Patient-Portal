@@ -28,10 +28,10 @@ const AS_CLIENT_ID = "bc-example1-client-id"
 const AS_TICKET_ID = "bc-services-ticket-1"
 
 const RESOURCES = {
-	"medications" : "5000",
-	"lab_results" : "6000",
-	"immunization": "1000",
-	"patient" : "7000"
+	"MedicationRequest" : "5000",
+	"DiagnosticReport" : "6000",
+	"Immunization": "1000",
+	"Patient" : "7000"
 }
 
 const CAPABILITIES = {
